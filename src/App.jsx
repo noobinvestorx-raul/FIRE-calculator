@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from "recharts";
 import { Lock, Check, Download, Loader2, X } from "lucide-react";
 
@@ -162,7 +162,24 @@ export default function FireCalculator() {
       nPaths: 400,
     });
   }, [unlocked, ahorro, aportacion, sim.rReal, volatilidad, numeroFireHoy]);
-
+// Al cargar la página, comprueba si venimos de un pago real de Stripe
+  // (Stripe redirige de vuelta con ?session_id=... en la URL)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    if (sessionId) {
+      fetch(`/.netlify/functions/verify-session?session_id=${sessionId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.paid) {
+            setUnlocked(true);
+          }
+          // Limpia la URL para que no quede el session_id visible
+          window.history.replaceState({}, "", window.location.pathname);
+        })
+        .catch((err) => console.error("Error verificando el pago:", err));
+    }
+  }, []);
   const handleUnlock = async () => {
     const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if (!validEmail) {
@@ -172,18 +189,28 @@ export default function FireCalculator() {
     setEmailError("");
     setPaying(true);
 
-    // Captura real del lead — esto pasa siempre, se complete o no el pago simulado.
+    // Captura real del lead — esto pasa siempre, se complete o no el pago.
     const sent = await sendLeadToEmailJS(email);
     setLeadSaved(sent);
 
-    // Demo: simula la confirmación de pago de Stripe Checkout.
-    // En producción este botón redirige a una sesión real de Stripe Checkout
-    // y el desbloqueo se dispara desde el webhook de pago confirmado.
-    setTimeout(() => {
+    // Pago real: crea una sesión de Stripe Checkout y redirige al usuario ahí.
+    try {
+      const res = await fetch("/.netlify/functions/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url; // redirige a Stripe Checkout
+      } else {
+        throw new Error(data.error || "No se pudo iniciar el pago");
+      }
+    } catch (err) {
+      console.error("Error creando la sesión de pago:", err);
+      setEmailError("No se pudo iniciar el pago. Inténtalo de nuevo.");
       setPaying(false);
-      setUnlocked(true);
-      setShowPaywall(false);
-    }, 1200);
+    }
   };
 
   return (
