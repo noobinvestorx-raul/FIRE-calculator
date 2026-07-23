@@ -15,9 +15,9 @@ const fmtEURDec = (n) =>
 //    con variables {{email}} y {{fecha}}, y pon aquí su ID
 // 3. En producción, carga el SDK con <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser/dist/email.min.js"></script>
 //    o `npm install @emailjs/browser` si lo despliegas como app completa
-const EMAILJS_SERVICE_ID = "TU_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID = "TU_TEMPLATE_ID";
-const EMAILJS_PUBLIC_KEY = "TU_PUBLIC_KEY";
+const EMAILJS_SERVICE_ID = "service_kjtxbc8";
+const EMAILJS_TEMPLATE_ID = "template_0noeak8";
+const EMAILJS_PUBLIC_KEY = "yNpXmaFhnSx9lLj1z";
 
 async function sendLeadToEmailJS(email) {
   // Envío best-effort: si EmailJS no está cargado (como aquí, en el prototipo)
