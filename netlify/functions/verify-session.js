@@ -1,7 +1,7 @@
-const Stripe = require("stripe");
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+import Stripe from "stripe";
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   const sessionId = event.queryStringParameters.session_id;
   if (!sessionId) {
     return { statusCode: 400, body: JSON.stringify({ error: "Falta session_id" }) };
