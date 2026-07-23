@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora FIRE · @noob_Investor</title>
+    <meta name="description" content="Calcula cuándo alcanzas tu independencia financiera (FIRE) con simulación Monte Carlo. Por @noob_Investor." />
+
+    <!-- Tailwind vía CDN: suficiente para este proyecto, sin necesidad de configurar PostCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tipografías: Fraunces (display) + Inter (cuerpo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- SDK de EmailJS para la captura de leads del informe premium -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser/dist/email.min.js"></script>
+    <script>
+      // Descomenta y pon tu Public Key cuando tengas tu cuenta de EmailJS configurada:
+      // emailjs.init("TU_PUBLIC_KEY");
+    </script>
+
+    <style>
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
